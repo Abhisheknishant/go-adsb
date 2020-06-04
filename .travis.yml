@@ -37,3 +37,18 @@ jobs:
         - curl -d "repo=kreklow.us/go/go-adsb" https://goreportcard.com/checks
         - curl -d "path=kreklow.us/go/go-adsb" https://godoc.org/-/refresh
       after_success: skip
+    - arch: arm64
+      name: "Race detector / Codecov"
+      script: go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+      after_success: bash <(curl -s https://codecov.io/bash)
+    - stage: refresh
+      arch: arm64
+      if: |
+        branch = master AND \
+        type = push
+      language: shell
+      install: skip
+      script:
+        - curl -d "repo=kreklow.us/go/go-adsb" https://goreportcard.com/checks
+        - curl -d "path=kreklow.us/go/go-adsb" https://godoc.org/-/refresh
+      after_success: skip
